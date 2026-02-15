@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Éduconnect - Réseau social étudiant</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- BARRE DE NAVIGATION SIMPLE -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <div class="logo" onclick="showScreen('feed')">
+                <i class="fas fa-graduation-cap"></i>
+                <span class="logo-text">Édu-connect...</span>
+            </div>
+        </div>
+        
+        <div class="nav-right">
+            <button class="menu-btn" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+    
+    <!-- MENU MOBILE -->
+    <div class="mobile-menu-overlay" id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
+    
+    <div class="mobile-menu" id="mobile-menu">
+        <div class="menu-header">
+            <div class="menu-user" id="menu-user">
+                <div class="user-avatar">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="user-info">
+                    <strong id="menu-username">Invité</strong>
+                    <small id="menu-useremail">Connectez-vous</small>
+                </div>
+            </div>
+            <button class="close-menu" onclick="closeMobileMenu()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="menu-nav">
+            <a href="#" class="menu-item active" onclick="showScreen('feed'); closeMobileMenu()">
+                <i class="fas fa-home"></i>
+                <span>Accueil</span>
+            </a>
+            
+            <a href="#" class="menu-item" onclick="showScreen('profile'); closeMobileMenu()">
+                <i class="fas fa-user"></i>
+                <span>Mon Profil</span>
+            </a>
+            
+            <a href="#" class="menu-item" onclick="showScreen('friends'); closeMobileMenu()">
+                <i class="fas fa-users"></i>
+                <span>Amis</span>
+                <span class="menu-badge">3</span>
+            </a>
+            
+            <a href="#" class="menu-item" onclick="showScreen('messages'); closeMobileMenu()">
+                <i class="fas fa-envelope"></i>
+                <span>Messages</span>
+                <span class="menu-badge" id="menu-messages-badge">5</span>
+            </a>
+            
+            <div class="menu-divider"></div>
+            
+            <a href="#" class="menu-item" onclick="showScreen('settings'); closeMobileMenu()">
+                <i class="fas fa-cog"></i>
+                <span>Paramètres</span>
+            </a>
+            
+            <a href="#" class="menu-item" onclick="showScreen('help'); closeMobileMenu()">
+                <i class="fas fa-question-circle"></i>
+                <span>Aide</span>
+            </a>
+            
+            <a href="#" class="menu-item" onclick="showScreen('about'); closeMobileMenu()">
+                <i class="fas fa-info-circle"></i>
+                <span>À propos</span>
+            </a>
+        </div>
+        
+        <div class="menu-auth" id="menu-auth">
+            <button class="auth-btn login-btn" onclick="showScreen('login'); closeMobileMenu()">
+                <i class="fas fa-sign-in-alt"></i>
+                <span>Connexion</span>
+            </button>
+            <button class="auth-btn register-btn" onclick="showScreen('register'); closeMobileMenu()">
+                <i class="fas fa-user-plus"></i>
+                <span>Inscription</span>
+            </button>
+        </div>
+        
+        <div class="menu-logout" id="menu-logout" style="display: none;">
+            <button class="logout-btn" onclick="logout(); closeMobileMenu()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Déconnexion</span>
+            </button>
+        </div>
+    </div>
+    
+    <!-- NAVIGATION EN BAS (MOBILE) -->
+    <div class="bottom-nav" id="bottom-nav">
+        <a href="#" class="nav-item active" onclick="showScreen('feed')">
+            <i class="fas fa-home"></i>
+            <span>Accueil</span>
+        </a>
+        
+        <a href="#" class="nav-item" onclick="showScreen('search')">
+            <i class="fas fa-search"></i>
+            <span>Recherche</span>
+        </a>
+        
+        <a href="#" class="nav-item" onclick="createPostMobile()">
+            <i class="fas fa-plus"></i>
+            <span>Créer</span>
+        </a>
+        
+        <a href="#" class="nav-item" onclick="showScreen('notifications')">
+            <i class="far fa-bell"></i>
+            <span>Alertes</span>
+            <span class="nav-badge">3</span>
+        </a>
+        
+        <a href="#" class="nav-item" onclick="showScreen('messages')">
+            <i class="fas fa-envelope"></i>
+            <span>Messages</span>
+            <span class="nav-badge" id="bottom-messages-badge">5</span>
+        </a>
+    </div>
+
+    <!-- CONTENU PRINCIPAL -->
+    <main id="app-container">
+        <!-- ÉCRAN DE CONNEXION -->
+        <div id="login-screen" class="screen active">
+            <div class="auth-container">
+                <div class="form-card">
+                    <h2><i class="fas fa-sign-in-alt"></i> Connexion</h2>
+                    
+                    <div class="form-group">
+                        <input type="email" id="login-email" placeholder="Votre Email" class="form-input">
+                    </div>
+                    
+                    <div class="form-group">
+                        <input type="password" id="login-password" placeholder="Mot de passe" class="form-input">
+                    </div>
+                    
+                    <button class="btn btn-primary btn-block" onclick="login()">
+                        <i class="fas fa-sign-in-alt"></i> Se connecter
+                    </button>
+                    
+                    <p class="form-footer">
+                        Première fois ? <a href="#" onclick="showScreen('register')">Crée un compte</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ÉCRAN D'INSCRIPTION -->
+        <div id="register-screen" class="screen">
+            <div class="auth-container">
+                <div class="form-card">
+                    <h2><i class="fas fa-user-plus"></i> Inscription</h2>
+                    
+                    <div class="form-group">
+                        <input type="text" id="register-name" placeholder="Nom complet" class="form-input">
+                    </div>
+                    
+                    <div class="form-group">
+                        <input type="email" id="register-email" placeholder="Votre Email" class="form-input">
+                    </div>
+                    
+                    <div class="form-group">
+                        <input type="text" id="register-username" placeholder="Nom d'utilisateur" class="form-input">
+                    </div>
+                    
+                    <div class="form-group">
+                        <select id="register-university" class="form-input">
+                            <option value="">Choisis ton université</option>
+                            <option value="UAM">Université Abdou Moumouni (UAM)</option>
+                            <option value="UAS">Université André Salifou (UAS)</option>
+                            <option value="UJH">Université Jibbo Hamani (UJH)</option>
+                            <option value="UAZ">Université d'Agadez (UAZ)</option>
+                            <option value="UTI">Université de Tillabéri (UTI)</option>
+                            <option value="UIN">Université Islamique du Niger (UIN)</option>
+                            <option value="UDS">Université de Diffa (UDS)</option>
+                            <option value="UZ">Université de Zinder (UZ)</option>
+                            <option value="UM">Université de Maradi (UM)</option>
+                            <option value="UTA">Université de Tahoua (UTA)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <input type="password" id="register-password" placeholder="Mot de passe" class="form-input">
+                    </div>
+                    
+                    <div class="form-group">
+                        <input type="password" id="register-confirm" placeholder="Confirmer mot de passe" class="form-input">
+                    </div>
+                    
+                    <button class="btn btn-primary btn-block" onclick="register()">
+                        <i class="fas fa-user-plus"></i> Créer mon compte
+                    </button>
+                    
+                    <p class="form-footer">
+                        Déjà inscrit ? <a href="#" onclick="showScreen('login')">Connecte-toi</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ÉCRAN PRINCIPAL (FEED) -->
+        <div id="feed-screen" class="screen">
+            <div class="search-container">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="search-input" placeholder="Rechercher des posts, des personnes...">
+                    <button class="search-btn" onclick="searchPosts()">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="feed-layout">
+                <aside class="sidebar desktop-only">
+                    <div class="sidebar-card">
+                        <h3><i class="fas fa-user"></i> Ton profil</h3>
+                        <div id="user-profile">
+                            <div class="profile-avatar">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <div class="profile-info">
+                                <strong id="profile-name">Chargement...</strong>
+                                <small id="profile-university"></small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-card">
+                        <h3><i class="fas fa-users"></i> Étudiants en ligne</h3>
+                        <div id="online-users">
+                            <div class="online-user" onclick="quickMessage(102)">
+                                <div class="online-avatar">
+                                    <i class="fas fa-user-circle"></i>
+                                    <span class="online-dot"></span>
+                                </div>
+                                <span>Ahmed D.</span>
+                            </div>
+                            <div class="online-user" onclick="quickMessage(103)">
+                                <div class="online-avatar">
+                                    <i class="fas fa-user-circle"></i>
+                                    <span class="online-dot"></span>
+                                </div>
+                                <span>Fatou S.</span>
+                            </div>
+                            <div class="online-user" onclick="quickMessage(104)">
+                                <div class="online-avatar">
+                                    <i class="fas fa-user-circle"></i>
+                                    <span class="online-dot"></span>
+                                </div>
+                                <span>Moussa K.</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="sidebar-card">
+                        <h3><i class="fas fa-hashtag"></i> Trends</h3>
+                        <div class="trends">
+                            <a href="#" class="trend-item">#ExamenFinal</a>
+                            <a href="#" class="trend-item">#Mémoire</a>
+                            <a href="#" class="trend-item">#Recherche</a>
+                        </div>
+                    </div>
+                </aside>
+
+                <section class="main-content">
+                    <div class="create-post">
+                        <div class="post-header">
+                            <div class="user-avatar">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <textarea id="post-content" placeholder="Partage quelque chose avec la communauté..."></textarea>
+                        </div>
+                        <div class="post-actions">
+                            <button class="action-btn" onclick="addImage()">
+                                <i class="fas fa-image"></i> Photo
+                            </button>
+                            <button class="action-btn" onclick="addTag()">
+                                <i class="fas fa-tag"></i> Tag
+                            </button>
+                            <button class="action-btn primary" onclick="createPost()">
+                                <i class="fas fa-paper-plane"></i> Publier
+                            </button>
+                        </div>
+                        <div id="post-tags" class="post-tags"></div>
+                    </div>
+
+                    <div class="filters">
+                        <button class="filter-btn active" onclick="filterPosts('all')">Tous</button>
+                        <button class="filter-btn" onclick="filterPosts('friends')">Amis</button>
+                        <button class="filter-btn" onclick="filterPosts('questions')">Questions</button>
+                        <button class="filter-btn" onclick="filterPosts('resources')">Ressources</button>
+                        <button class="filter-btn" onclick="filterPosts('university')">Mon Université</button>
+                    </div>
+
+                    <div id="posts-container"></div>
+                </section>
+
+                <aside class="sidebar-right desktop-only">
+                    <div class="sidebar-card">
+                        <h3><i class="fas fa-calendar"></i> Événements</h3>
+                        <div class="events">
+                            <div class="event-item">
+                                <strong>Soutenance Mémoire</strong>
+                                <small>15 Mars - Faculté des Sciences</small>
+                            </div>
+                            <div class="event-item">
+                                <strong>Forum Emploi</strong>
+                                <small>22 Mars - Amphi A</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="sidebar-card">
+                        <h3><i class="fas fa-book"></i> Ressources</h3>
+                        <div class="resources">
+                            <a href="#" class="resource-item">
+                                <i class="fas fa-file-pdf"></i>
+                                <span>Guide méthodologique</span>
+                            </a>
+                            <a href="#" class="resource-item">
+                                <i class="fas fa-link"></i>
+                                <span>Bibliothèque en ligne</span>
+                            </a>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+
+        <!-- ÉCRAN PROFIL -->
+        <div id="profile-screen" class="screen">
+            <div class="profile-container">
+                <h2><i class="fas fa-user"></i> Mon Profil</h2>
+                <p>En développement...</p>
+            </div>
+        </div>
+
+        <!-- ÉCRAN AMIS -->
+        <div id="friends-screen" class="screen">
+            <div class="friends-container">
+                <h2><i class="fas fa-users"></i> Amis</h2>
+                <p>En développement...</p>
+            </div>
+        </div>
+
+        <!-- ÉCRAN MESSAGES - NOUVEAU DESIGN -->
+        <div id="messages-screen" class="screen">
+            <div class="messages-layout">
+                <!-- Liste des conversations -->
+                <div class="conversations-sidebar" id="conversations-sidebar">
+                    <div class="conversations-header">
+                        <h2><i class="fas fa-comment-dots"></i> Messages</h2>
+                        <button class="new-chat-btn" onclick="showNewChatModal()">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="conversation-filters">
+                        <button class="conv-filter active" onclick="filterConversations('all')">Tous</button>
+                        <button class="conv-filter" onclick="filterConversations('individual')">Individuels</button>
+                        <button class="conv-filter" onclick="filterConversations('groups')">Groupes</button>
+                    </div>
+                    
+                    <div class="conversation-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="conversation-search" placeholder="Rechercher une conversation...">
+                    </div>
+                    
+                    <div class="conversations-list" id="conversations-list">
+                        <div class="loading-conversations">
+                            <i class="fas fa-spinner fa-spin"></i> Chargement...
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Zone de chat active -->
+                <div class="chat-area" id="chat-area">
+                    <div class="no-chat-selected" id="no-chat-selected">
+                        <i class="fas fa-comments"></i>
+                        <h3>Vos messages</h3>
+                            <i class="fas fa-plus"></i> Nouvelle conversation
+                        </button>
+                    </div>
+                    
+                    <div class="chat-active" id="chat-active" style="display: none;">
+                        <div class="chat-header" id="chat-header">
+                            <div class="chat-header-info" onclick="showChatDetails()">
+                                <div class="chat-avatar" id="chat-avatar">
+                                    <i class="fas fa-user-circle"></i>
+                                </div>
+                                <div class="chat-details">
+                                    <strong id="chat-name">Nom du chat</strong>
+                                    <small id="chat-status">En ligne</small>
+                                </div>
+                            </div>
+                            <div class="chat-actions">
+                                <button class="chat-action-btn" onclick="showChatDetails
+                                    <i class="fas fa-info-circle"></i>
+                                </button>
+                                <button class="chat-action-btn mobile-back" onclick="hideChatOnMobile()">
+                                    <i class="fas fa-arrow-left"></i>
+</button>
+                            </div>
+                        </div>
+                        
+                        <div class="messages-container" id="messages-container"></div>
+                        
+                        <div class="message-input-area">
+                            <button class="attach-btn" onclick="showAttachOptions()">
+                                <i class="fas fa-paperclip"></i>
+                            </button>
+                            <div class="message-input-wrapper">
+                                <textarea 
+                                    id="message-input" 
+                                    placeholder="Écrivez votre message..."
+                                    onkeydown="handleMessageKeydown(event)"
+                                    rows="1"
+                                ></textarea>
+                            </div>
+                            <button class="send-btn" onclick="sendMessage()">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="attach-options" id="attach-options" style="display: none;">
+                            <button onclick="attachFile('image')">
+                                <i class="fas fa-image"></i> Image
+                            </button>
+                            <button onclick="attachFile('pdf')">
+                                <i class="fas fa-file-pdf"></i> PDF
+                            </button>
+                            <button onclick="attachFile('file')">
+                                <i class="fas fa-file"></i> Fichier
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ÉCRAN DÉTAILS CONVERSATION -->
+        <div id="chat-details-screen" class="screen">
+            <div class="chat-details-container">
+                <div class="details-header">
+                    <button class="back-btn" onclick="hideChatDetails()">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h2>Détails</h2>
+                </div>
+                
+                <div class="details-content" id="chat-details-content">
+                    <div class="details-section">
+                        <h3>À propos</h3>
+                        <div class="chat-info">
+                            <div class="chat-main-avatar" id="details-avatar">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="chat-main-info">
+                                <strong id="details-chat-name">Nom</strong>
+                                <span id="details-chat-type">Type de conversation</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="details-section">
+                        <h3>Participants <span id="participants-count">(0)</span></h3>
+                        <div class="participants-list" id="participants-list"></div>
+                        <button class="add-participant-btn" onclick="showAddParticipantModal()">
+                            <i class="fas fa-user-plus"></i> Ajouter un participant
+                        </button>
+                    </div>
+                    
+                    <div class="details-section">
+                        <h3>Médias partagés</h3>
+                        <div class="shared-media" id="shared-media">
+                            <p class="no-media">Aucun média partagé</p>
+                        </div>
+                    </div>
+                    
+                    <div class="details-section actions">
+                        <button class="danger-btn" onclick="leaveGroup()">
+                            <i class="fas fa-sign-out-alt"></i> Quitter le groupe
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ÉCRAN RECHERCHE -->
+        <div id="search-screen" class="screen">
+            <div class="search-screen-container">
+                <h2><i class="fas fa-search"></i> Recherche</h2>
+                <p>En développement...</p>
+            </div>
+        </div>
+
+        <!-- ÉCRAN NOTIFICATIONS -->
+        <div id="notifications-screen" class="screen">
+            <div class="notifications-container">
+                <h2><i class="far fa-bell"></i> Notifications</h2>
+                <p>En développement...</p>
+            </div>
+        </div>
+
+        <!-- ÉCRAN PARAMÈTRES -->
+        <div id="settings-screen" class="screen">
+            <div class="settings-container">
+                <h2><i class="fas fa-cog"></i> Paramètres</h2>
+                <p>En développement...</p>
+            </div>
+        </div>
+
+        <!-- ÉCRAN À PROPOS -->
+        <div id="about-screen" class="screen">
+            <div class="about-container">
+                <h2><i class="fas fa-info-circle"></i> À propos</h2>
+                <div class="about-content">
+                    <h3>🎓 Éduconnect</h3>
+                    <p>Le premier réseau social étudiant dédié aux universités nigériennes.</p>
+                    <p>Notre mission est de connecter, inspirer et accompagner la nouvelle génération d'étudiants nigériens.</p>
+                    <p>Version 1.0.0</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ÉCRAN AIDE -->
+        <div id="help-screen" class="screen">
+            <div class="help-container">
+                <h2><i class="fas fa-question-circle"></i> Aide</h2>
+                <p>En développement...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL NOUVELLE CONVERSATION -->
+    <div id="new-chat-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Nouvelle conversation</h3>
+                <button class="close-modal" onclick="hideNewChatModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="chat-type-selector">
+                    <button class="chat-type-btn active" onclick="selectChatType('individual')">
+                        <i class="fas fa-user"></i> Individuel
+                    </button>
+                    <button class="chat-type-btn" onclick="selectChatType('group')">
+                        <i class="fas fa-users"></i> Groupe
+                    </button>
+                </div>
+                
+                <div id="individual-chat-form">
+                    <div class="form-group">
+                        <label>Rechercher un étudiant</label>
+                        <div class="search-user-input">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="search-user" placeholder="Nom, email, filière..." oninput="searchUsers(this.value)">
+                        </div>
+                    </div>
+                    
+                    <div class="search-results" id="search-results"></div>
+                    
+                    <div class="recent-users">
+                        <h4>Récemment actifs</h4>
+                        <div id="recent-users-list"></div>
+                    </div>
+                </div>
+                
+                <div id="group-chat-form" style="display: none;">
+                    <div class="form-group">
+                        <label>Nom du groupe</label>
+                        <input type="text" id="group-name" placeholder="Ex: Licence 3 Informatique">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Description (optionnelle)</label>
+                        <textarea id="group-description" placeholder="But du groupe..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Sélectionner les participants</label>
+                        <div class="selected-participants" id="selected-participants"></div>
+                        
+                        <div class="search-user-input">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="search-group-users" placeholder="Ajouter des participants..." oninput="searchGroupUsers(this.value)">
+                        </div>
+                        
+                        <div class="search-results" id="group-search-results"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="hideNewChatModal()">Annuler</button>
+                <button class="btn btn-primary" onclick="createConversation()" id="create-conv-btn">
+                    Créer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION -->
+    <div id="notification"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
